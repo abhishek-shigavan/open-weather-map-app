@@ -54,12 +54,12 @@ const useStyles = makeStyles({
     },
 })
 
-function Navbar() {
+function Navbar(props) {
     const classes = useStyles();
     const vertical = "top";
     const horizontal = "center";
     const [anchorEl, setAnchorEl] = useState(null);
-    const [inputCityName, setInputCityName] = useState();
+    const [inputCityName, setInputCityName] = useState("");
     const [searchCityResult, setSearchCityResult] = useState([]);
     const [cityNotFound, setCityNotFound] = useState(false);
 
@@ -70,7 +70,7 @@ function Navbar() {
     const handleSearchClick = (event) => {
         getDataByCityName(inputCityName).then((res) => {
             console.log(res);
-            setSearchCityResult([res.data]);
+            res.data.list.length ? setSearchCityResult(res.data.list) : setCityNotFound(true)
         }).catch((err) =>{
             setCityNotFound(true);
             console.log(err);
@@ -90,7 +90,13 @@ function Navbar() {
         setCityNotFound(false);
     };
 
-    let open = Boolean(anchorEl);
+    const sendSearchCityData = (cityData) => {
+            props.searchCityData(cityData);
+            setInputCityName("");
+            handleClickAway()
+    }
+
+    const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : undefined;
 
     return(
@@ -98,6 +104,7 @@ function Navbar() {
             <div className="navbar-outer-container">
                 <TextField
                     placeholder={"Search city"}
+                    value={inputCityName}
                     onChange={handleUserInput} 
                     className={classes.customTextfield}
                     InputProps={{disableUnderline: true,
@@ -115,11 +122,11 @@ function Navbar() {
                     {searchCityResult.map(city =>(
                         <List className={classes.customList}>
                             <ListItem className={classes.customListItem}>
-                                <ListItemButton>
+                                <ListItemButton onClick={() => sendSearchCityData(city)}>
                                     <ListItemText>
                                     <div className="dropdown-menu-option">
                                         <Typography>{city.name+", "+city.sys.country}</Typography>
-                                        <Typography>{~~(city.main.temp - 273.15)+ " C"}</Typography> 
+                                        <Typography>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography> 
                                         <Typography className={classes.customTypographyLatLon}>{city.coord.lat+", "+city.coord.lon}</Typography> 
                                     </div>
                                     </ListItemText>
