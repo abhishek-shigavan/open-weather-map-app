@@ -11,14 +11,16 @@ const useStyles = makeStyles({
         left: 230,
         width: 300,
         height: 260,
-        border: "none"
+        border: "none",
+       
     },
     customCardContent: {
         display: "flex",
         height: 220,
         flexDirection: "column",
         justifyContent: "space-between",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
+        background: "#E8E8E8"
     },
     typographyDateTime: {
         textAlign: "left",
@@ -69,16 +71,22 @@ function Home() {
                     <CardContent className={classes.customCardContent}>
                         <div>
                             <Typography className={classes.typographyDateTime}>{dateTime}</Typography>
-                            <Typography className={classes.typographyCityName}>{cityData.name+", "+cityData.sys.country}</Typography>
+                            <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                         </div>
                         <div>
-                            <Typography className={classes.typographyTemperature}>{~~(cityData.main.temp - 273.15)+ "\u00B0C"}</Typography>
-                            <Typography className={classes.typographyWeather}>{"Feels like "+~~(cityData.main.temp - 273.15)+"\u00B0C. "+cityData.weather[0].description+". "+cityData.weather[0].main}</Typography>
+                            <Typography className={classes.typographyTemperature}>{~~(cityData.weatherData.temp)+ "\u00B0C"}</Typography>
+                            <Typography className={classes.typographyWeather}>{"Feels like "+~~(cityData.weatherData.feels_like)+"\u00B0C. "+cityData.weatherData.weather[0].description+". "+cityData.weatherData.weather[0].main}</Typography>
                     
                             <Box className={classes.customBoxForWeatherDetails}>
-                                <Typography className={classes.typographyWeatherDetails}>{cityData.wind.speed+"m/s E"+cityData.main.pressure +" hPa"}</Typography>
-                                <Typography className={classes.typographyWeatherDetails}>{"Humidity: "+cityData.main.humidity+"% UV: 0"}</Typography>
-                                <Typography className={classes.typographyWeatherDetails}>{"Dew point: 4\u00B0C" +"    "+"Visibility: 0.6km"}</Typography>
+                                <Typography className={classes.typographyWeatherDetails}>
+                                    {cityData.weatherData.wind_speed+"m/s E" +cityData.weatherData.pressure +" hPa"}
+                                </Typography>
+                                <Typography className={classes.typographyWeatherDetails}>
+                                    {"Humidity: "+cityData.weatherData.humidity+"%" +  "UV: "+cityData.weatherData.uvi}
+                                </Typography>
+                                <Typography className={classes.typographyWeatherDetails}>
+                                    {"Dew point: "+ cityData.weatherData.dew_point +"\u00B0C" +"    "+"Visibility: " + (cityData.weatherData.visibility/1000)+ "km"}
+                                </Typography>
                             </Box>
                         </div> 
                     </CardContent>
