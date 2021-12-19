@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "../sass/Navbar.scss";
 import { TextField, Button, makeStyles, InputAdornment, Box, List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import { ListItemButton, Popper, Snackbar, Alert, ClickAwayListener } from "@mui/material";
-import { getDataByCityName } from "../service/WeatherDataService";
+import { getDataByCityName, getDataByLatLon } from "../service/WeatherDataService";
 
 const useStyles = makeStyles({
     customTextfield: {
-        width: 500,
+        width: 625,
         height: 32,
         paddingLeft: 10,
         border: '1px solid lightgray',
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     },
     customButton: {
         height: 33,
-        width: 80,   
+        width: 120,   
         backgroundColor: '#48484A',
         borderRadius: '0px 3px 3px 0px',
         color: 'white',
@@ -29,24 +29,27 @@ const useStyles = makeStyles({
     },
     customBoxStyle: {
         position: "relative",
-        width: 429,
+        width: 515,
         backgroundColor: "white",
         border: "1px solid lightgrey",
         borderTop: 0,
         borderRadius: '0px 0px 3px 3px',
-        left: -431
+        left: -119
     },
     customSnackBar: {
         marginTop: 100,
         width: 400
     },
     customList: {
-        border: "0px 1px 1px 1px solid black",
-        borderRadius: '0px 0px 3px 3px'
+        borderRadius: '0px 0px 3px 3px',
+        padding: 0
     },
     customListItem: {
-        paddingBottom: 0,
-        paddingTop: 0
+        padding: 0,
+        height: 36
+    },
+    customListItemButton: {
+        height: 36,
     },
     customTypographyLatLon: {
         fontSize: 11,
@@ -72,7 +75,6 @@ function Navbar(props) {
             console.log(res);
             res.data.list.length ? setSearchCityResult(res.data.list) : setCityNotFound(true)
         }).catch((err) =>{
-            setCityNotFound(true);
             console.log(err);
         })
         setAnchorEl(anchorEl ? null : event.currentTarget)
@@ -91,9 +93,17 @@ function Navbar(props) {
     };
 
     const sendSearchCityData = (cityData) => {
-            props.searchCityData(cityData);
+        getDataByLatLon(cityData.coord.lat, cityData.coord.lon).then(res => {
+            const weatherDataWithCityDetails = {
+                weatherData : res.data.current,
+                cityName : cityData.name,
+                country : cityData.sys.country
+            }
+            
+            props.searchCityData(weatherDataWithCityDetails)
             setInputCityName("");
-            handleClickAway()
+            handleClickAway();
+        })
     }
 
     const open = Boolean(anchorEl);
@@ -122,7 +132,7 @@ function Navbar(props) {
                     {searchCityResult.map(city =>(
                         <List className={classes.customList}>
                             <ListItem className={classes.customListItem}>
-                                <ListItemButton onClick={() => sendSearchCityData(city)}>
+                                <ListItemButton className={classes.customListItemButton} dense={true} onClick={() => sendSearchCityData(city)}>
                                     <ListItemText>
                                     <div className="dropdown-menu-option">
                                         <Typography>{city.name+", "+city.sys.country}</Typography>
