@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "../sass/Navbar.scss";
 import { TextField, Button, makeStyles, InputAdornment, Box, List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import { ListItemButton, Popper, Snackbar, Alert, ClickAwayListener } from "@mui/material";
-import { getDataByCityName, getDataByLatLon } from "../service/WeatherDataService";
+import { getDataByCityName } from "../service/WeatherDataService";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles({
     customTextfield: {
@@ -57,8 +58,9 @@ const useStyles = makeStyles({
     },
 })
 
-function Navbar(props) {
+function Navbar() {
     const classes = useStyles();
+    const navigate = useNavigate();
     const vertical = "top";
     const horizontal = "center";
     const [anchorEl, setAnchorEl] = useState(null);
@@ -93,17 +95,9 @@ function Navbar(props) {
     };
 
     const sendSearchCityData = (cityData) => {
-        getDataByLatLon(cityData.coord.lat, cityData.coord.lon).then(res => {
-            const weatherDataWithCityDetails = {
-                weatherData : res.data.current,
-                cityName : cityData.name,
-                country : cityData.sys.country
-            }
-            
-            props.searchCityData(weatherDataWithCityDetails)
-            setInputCityName("");
-            handleClickAway();
-        })
+        navigate(`/q:${cityData.name}&id:${cityData.id}`);
+        setInputCityName("");
+        handleClickAway();
     }
 
     const open = Boolean(anchorEl);
