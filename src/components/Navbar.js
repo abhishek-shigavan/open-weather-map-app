@@ -52,7 +52,26 @@ const useStyles = makeStyles({
     customListItemButton: {
         height: 36,
     },
+    customTypographyCityCountry: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        width: 200
+    },
+    customTypographyTemperature: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        width: 83
+    },
     customTypographyLatLon: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        width: 200,
         fontSize: 11,
         color: "grey"
     },
@@ -129,9 +148,9 @@ function Navbar() {
                                 <ListItemButton className={classes.customListItemButton} dense={true} onClick={() => sendSearchCityData(city)}>
                                     <ListItemText>
                                     <div className="dropdown-menu-option">
-                                        <Typography>{city.name+", "+city.sys.country}</Typography>
-                                        <Typography>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography> 
-                                        <Typography className={classes.customTypographyLatLon}>{city.coord.lat+", "+city.coord.lon}</Typography> 
+                                        <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
+                                        <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography> 
+                                        <Typography className={classes.customTypographyLatLon}>{"lat "+city.coord.lat+", lon "+city.coord.lon}</Typography> 
                                     </div>
                                     </ListItemText>
                                 </ListItemButton>
