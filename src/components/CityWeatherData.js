@@ -5,6 +5,7 @@ import { Card, CardContent } from "@mui/material";
 import { getDataByCityId, getDataByLatLon } from "../service/WeatherDataService";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
+import {ArrowDownwardOutlined, ExploreOutlined } from '@mui/icons-material';
 
 const useStyles = makeStyles({
     customCard: {
@@ -42,22 +43,40 @@ const useStyles = makeStyles({
     typographyWeather: {
         textAlign: "left",
         fontSize: 14,
-        fontWeight: 700   
+        fontWeight: 700,
+        paddingBottom: 5   
+    },
+    typographyWeatherDetailsWithIcon: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        height: 20,
+        textAlign: "left",
+        fontSize: 14,
+        width: 120
     },
     typographyWeatherDetails: {
         textAlign: "left",
         fontSize: 14,
+        width: 120
     },
     customBoxForWeatherDetails: {
         borderLeft: '1px solid #ED7B5B',
         paddingLeft: 15
+    },
+    customBoxForTypography: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        height: 20,
     }
 })
 
 function CityWeatherData(props) {
     const {CityName , CityID } = useParams();
     const classes = useStyles();
-    const dateTime = moment().format("MMM D[, ] hh[:]mm a");
     const [cityData, setCityData] = useState(null);
 
     useEffect(()=> {
@@ -78,6 +97,7 @@ function CityWeatherData(props) {
                 country: country,
                 weatherData: res.data.current
             });
+            console.log(res.data.current)
         })
     }
 
@@ -90,7 +110,7 @@ function CityWeatherData(props) {
             <Card className={classes.customCard}>
                 <CardContent className={classes.customCardContent}>
                     <div>
-                        <Typography className={classes.typographyDateTime}>{dateTime}</Typography>
+                        <Typography className={classes.typographyDateTime}>{moment().format("MMM D[, ] hh[:]mm a")}</Typography>
                         <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                     </div>
                     <div>
@@ -98,15 +118,22 @@ function CityWeatherData(props) {
                         <Typography className={classes.typographyWeather}>{"Feels like "+~~(cityData.weatherData.feels_like)+"\u00B0C. "+cityData.weatherData.weather[0].description+". "+cityData.weatherData.weather[0].main}</Typography>
 
                         <Box className={classes.customBoxForWeatherDetails}>
-                            <Typography className={classes.typographyWeatherDetails}>
-                                {cityData.weatherData.wind_speed+"m/s E" +cityData.weatherData.pressure +" hPa"}
-                            </Typography>
-                            <Typography className={classes.typographyWeatherDetails}>
-                                {"Humidity: "+cityData.weatherData.humidity+"%" +  "UV: "+cityData.weatherData.uvi}
-                            </Typography>
-                            <Typography className={classes.typographyWeatherDetails}>
-                                {"Dew point: "+ cityData.weatherData.dew_point +"\u00B0C" +"    "+"Visibility: " + (cityData.weatherData.visibility/1000)+ "km"}
-                            </Typography>
+                            <Box className={classes.customBoxForTypography}>
+                                <Typography className={classes.typographyWeatherDetailsWithIcon}>
+                                    <ArrowDownwardOutlined sx={{height: 18, width: 18}} /> {cityData.weatherData.wind_speed+" m/s E"}
+                                </Typography>
+                                <Typography className={classes.typographyWeatherDetailsWithIcon}>
+                                    <ExploreOutlined sx={{height: 18 , width: 18}} /> {cityData.weatherData.pressure +" hPa"}
+                                </Typography>
+                            </Box>
+                            <Box className={classes.customBoxForTypography}>
+                                <Typography className={classes.typographyWeatherDetails}> {"Humidity: "+cityData.weatherData.humidity+"%"} </Typography>
+                                <Typography className={classes.typographyWeatherDetails}> {"UV: "+cityData.weatherData.uvi} </Typography>
+                            </Box>           
+                            <Box className={classes.customBoxForTypography}>
+                                <Typography className={classes.typographyWeatherDetails}> {"Dew point: "+ ~~(cityData.weatherData.dew_point) +"\u00B0C"} </Typography>
+                                <Typography className={classes.typographyWeatherDetails}> {"Visibility: " + (cityData.weatherData.visibility/1000)+ "km"} </Typography>
+                            </Box>
                         </Box>
                     </div> 
                 </CardContent>
