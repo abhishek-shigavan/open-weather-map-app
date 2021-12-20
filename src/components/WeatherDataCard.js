@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles, Typography, Box } from "@material-ui/core";
+import { makeStyles, Typography, Box, IconButton } from "@material-ui/core";
 import { Card, CardContent } from "@mui/material";
 import { getDataByCityId, getDataByLatLon } from "../service/WeatherDataService";
-import {ArrowDownwardOutlined, ExploreOutlined } from '@mui/icons-material';
+import { ArrowDownwardOutlined, ExploreOutlined } from '@mui/icons-material';
 import moment from "moment-timezone";
 import clearSky from "../assets/clearSky.png";
 import overcastCloud from "../assets/overcastClouds.png";
 import sunCloud from "../assets/sunCloud.png";
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 
 const useStyles = makeStyles({
     customBoxForCard: {
@@ -28,6 +29,17 @@ const useStyles = makeStyles({
         justifyContent: "space-between",
         alignItems: "flex-start",
         background: "#E8E8E8"
+    },
+    customBoxDateCloseIcon: {
+        display: "flex",
+        flexDirection: "row",
+        width: 268,
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    customIconButton: {
+        paddingTop: 5,
+        paddingBottom: 5
     },
     typographyDateTime: {
         textAlign: "left",
@@ -78,7 +90,7 @@ const useStyles = makeStyles({
     }
 })
 
-function WeatherDataCard({CityName, CityID}) {
+function WeatherDataCard({ position, CityName, CityID, removeCityCard }) {
     const classes = useStyles();
     const [cityData, setCityData] = useState();
     const [weatherIcon, setWeatherIcon] = useState();
@@ -117,7 +129,10 @@ function WeatherDataCard({CityName, CityID}) {
                 <Card className={classes.customCard}>
                     <CardContent className={classes.customCardContent}>
                         <div>
-                            <Typography className={classes.typographyDateTime}>{moment().tz(cityData.timeZone).format("MMM D[, ] hh[:]mm a")}</Typography>
+                            <Box className={classes.customBoxDateCloseIcon}>
+                                <Typography className={classes.typographyDateTime}>{moment().tz(cityData.timeZone).format("MMM D[, ] hh[:]mm a")}</Typography>
+                                <IconButton className={classes.customIconButton} onClick={() => removeCityCard(position)}> <CancelPresentationIcon /> </IconButton>
+                            </Box>
                             <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                         </div>
                         <div>
