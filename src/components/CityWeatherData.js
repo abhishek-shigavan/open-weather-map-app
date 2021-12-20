@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Typography, Box } from "@material-ui/core";
-import moment from "moment";
 import { Card, CardContent } from "@mui/material";
 import { getDataByCityId, getDataByLatLon } from "../service/WeatherDataService";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import {ArrowDownwardOutlined, ExploreOutlined } from '@mui/icons-material';
+import moment from "moment-timezone";
+import clearSky from "../assets/clearSky.png";
+import overcastCloud from "../assets/overcastClouds.png";
+import sunCloud from "../assets/sunCloud.png";
 
 const useStyles = makeStyles({
     customCard: {
@@ -78,6 +81,7 @@ function CityWeatherData(props) {
     const {CityName , CityID } = useParams();
     const classes = useStyles();
     const [cityData, setCityData] = useState(null);
+    const [weatherIcon, setWeatherIcon] = useState();
 
     useEffect(()=> {
         getCityDataById();
@@ -86,7 +90,6 @@ function CityWeatherData(props) {
     const getCityDataById = () => {
         getDataByCityId(CityID.substring(1)).then(res => {
             getWeatherDataByLatitudeLongitude(res.data.coord.lat, res.data.coord.lon, res.data.sys.country);
-            console.log("rendering");
         })
     }
 
@@ -95,9 +98,13 @@ function CityWeatherData(props) {
             setCityData({
                 cityName: CityName.substring(1),
                 country: country,
-                weatherData: res.data.current
+                weatherData: res.data.current,
+                timeZone: res.data.timezone
             });
-            console.log(res.data.current)
+
+            res.data.current.weather[0].main === "Clear" ? setWeatherIcon(clearSky)
+                : res.data.current.weather[0].main === "Clouds" ? setWeatherIcon(overcastCloud)
+                : setWeatherIcon(sunCloud);
         })
     }
 
@@ -110,11 +117,14 @@ function CityWeatherData(props) {
             <Card className={classes.customCard}>
                 <CardContent className={classes.customCardContent}>
                     <div>
-                        <Typography className={classes.typographyDateTime}>{moment().format("MMM D[, ] hh[:]mm a")}</Typography>
+                        <Typography className={classes.typographyDateTime}>{moment().tz(cityData.timeZone).format("MMM D[, ] hh[:]mm a")}</Typography>
                         <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                     </div>
                     <div>
-                        <Typography className={classes.typographyTemperature}>{~~(cityData.weatherData.temp)+ "\u00B0C"}</Typography>
+                        <Typography className={classes.typographyTemperature}>
+                            <img src={weatherIcon} alt="" style={{paddingRight: 10, width: 28, height: 28}}/>
+                            {~~(cityData.weatherData.temp)+ "\u00B0C"}
+                        </Typography>
                         <Typography className={classes.typographyWeather}>{"Feels like "+~~(cityData.weatherData.feels_like)+"\u00B0C. "+cityData.weatherData.weather[0].description+". "+cityData.weatherData.weather[0].main}</Typography>
 
                         <Box className={classes.customBoxForWeatherDetails}>
