@@ -4,6 +4,9 @@ import { TextField, Button, makeStyles, InputAdornment, Box, List, ListItem, Lis
 import { ListItemButton, Popper, Snackbar, Alert, ClickAwayListener } from "@mui/material";
 import { getDataByCityName } from "../service/WeatherDataService";
 import { useNavigate } from "react-router-dom";
+import clearSky from "../assets/clearSky.png";
+import overcastCloud from "../assets/overcastClouds.png";
+import sunCloud from "../assets/sunCloud.png";
 
 const useStyles = makeStyles({
     customTextfield: {
@@ -57,7 +60,7 @@ const useStyles = makeStyles({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
-        width: 200
+        width: 170
     },
     customTypographyTemperature: {
         display: 'flex',
@@ -71,7 +74,7 @@ const useStyles = makeStyles({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
-        width: 200,
+        width: 170,
         fontSize: 11,
         color: "grey"
     },
@@ -96,6 +99,8 @@ function Navbar() {
             console.log(res);
             res.data.list.length ? setSearchCityResult(res.data.list) : setCityNotFound(true)
         }).catch((err) =>{
+            setCityNotFound(true);
+            setInputCityName("");
             console.log(err);
         })
         setAnchorEl(anchorEl ? null : event.currentTarget)
@@ -121,6 +126,7 @@ function Navbar() {
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : undefined;
+    let path;
 
     return(
         <>
@@ -149,7 +155,11 @@ function Navbar() {
                                     <ListItemText>
                                     <div className="dropdown-menu-option">
                                         <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
-                                        <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography> 
+                                        <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography>
+                                        <img src={ city.weather[0].main === "Clear" ? clearSky
+                                                    : city.weather[0].main === "Clouds" ? overcastCloud
+                                                    : sunCloud} alt=""
+                                        /> 
                                         <Typography className={classes.customTypographyLatLon}>{"lat "+city.coord.lat+", lon "+city.coord.lon}</Typography> 
                                     </div>
                                     </ListItemText>
