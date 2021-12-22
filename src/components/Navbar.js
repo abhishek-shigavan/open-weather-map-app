@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../sass/Navbar.scss";
 import { TextField, Button, makeStyles, InputAdornment, Box, List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import { ListItemButton, Popper, Snackbar, Alert, ClickAwayListener } from "@mui/material";
 import { getDataByCityName } from "../service/WeatherDataService";
-import { useNavigate } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import clearSky from "../assets/clearSky.png";
 import overcastCloud from "../assets/overcastClouds.png";
 import sunCloud from "../assets/sunCloud.png";
@@ -80,15 +80,31 @@ const useStyles = makeStyles({
     },
 })
 
+function useCityId() {
+    const { search } = useLocation();
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+}
+
 function Navbar() {
     const classes = useStyles();
-    const navigate = useNavigate();
+    const history = useHistory();
+    const cityInParams = useCityId();
     const vertical = "top";
     const horizontal = "center";
     const [anchorEl, setAnchorEl] = useState(null);
     const [inputCityName, setInputCityName] = useState("");
     const [searchCityResult, setSearchCityResult] = useState([]);
     const [cityNotFound, setCityNotFound] = useState(false);
+    const [cityIdList, setCityIdList] = useState([]);
+    const [renderingState, setRenderingState] = useState(false);
+
+    useEffect(() => {
+        cityInParams.get("id") !== null ? setCityIdList(cityInParams.get("id").split(',')) : console.log("Home Page");
+    },[cityInParams])
+
+    useEffect(() => {
+       sendSearchCityData(cityIdList); 
+    },[renderingState])
 
     const handleUserInput = (event) => {
         setInputCityName(event.target.value);
@@ -118,15 +134,34 @@ function Navbar() {
         setCityNotFound(false);
     };
 
-    const sendSearchCityData = (cityData) => {
-        navigate(`/q:${cityData.name}&id:${cityData.id}`);
-        setInputCityName("");
-        handleClickAway();
+    const sendSearchCityData = (cityIdList) => {
+        let cityIdString ="";
+        if(cityIdList.length > 0 && cityIdList.length <= 5) {
+            cityIdString = getCityIdString();
+            history.push(`/weather?id=${cityIdString}`);
+        }
+        else if (cityIdList.length > 5) {
+            cityIdString = removeOldCityId();
+            history.push(`/weather?id=${cityIdString}`);
+        }    
+    }
+
+    const getCityIdString = () => {
+        let cityIdString = "";
+        cityIdList.forEach(cityId => { let temp = cityId;
+            cityIdString = cityIdString + temp +","
+        })
+        return(cityIdString.slice(0, -1))
+    }
+
+    const removeOldCityId = () => {
+        cityIdList.pop();
+        const cityId =  getCityIdString();
+        return cityId;
     }
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : undefined;
-    let path;
 
     return(
         <>
@@ -151,7 +186,16 @@ function Navbar() {
                     {searchCityResult.map(city =>(
                         <List className={classes.customList}>
                             <ListItem className={classes.customListItem}>
-                                <ListItemButton className={classes.customListItemButton} dense={true} onClick={() => sendSearchCityData(city)}>
+                                <ListItemButton 
+                                    className={classes.customListItemButton} 
+                                    dense={true} 
+                                    onClick={() => {
+                                                setInputCityName(""); 
+                                                setCityIdList(oldId => [city.id, ...oldId]);
+                                                setRenderingState(!renderingState);    
+                                                handleClickAway();
+                                            }}
+                                >
                                     <ListItemText>
                                     <div className="dropdown-menu-option">
                                         <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
