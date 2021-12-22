@@ -1,15 +1,17 @@
 import './App.css';
 import Home from './components/Home';
-import { Routes, Route} from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import CityWeatherData from './components/CityWeatherData';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route exact path="/" element={<Home/>}></Route>
-        <Route path="/q:CityName&id:CityID" exact element={<CityWeatherData/>}></Route>
-      </Routes>
+      <Switch>
+        <Route exact path="/" component={Home}></Route>
+        <Route path="/weather?id=CityID" component={CityWeatherData}></Route>
+        <CityWeatherData/>
+      </Switch>
     </div>
   );
 }
