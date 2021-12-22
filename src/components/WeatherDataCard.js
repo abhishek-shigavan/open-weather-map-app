@@ -7,7 +7,7 @@ import moment from "moment-timezone";
 import clearSky from "../assets/clearSky.png";
 import overcastCloud from "../assets/overcastClouds.png";
 import sunCloud from "../assets/sunCloud.png";
-import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const useStyles = makeStyles({
     customBoxForCard: {
@@ -90,25 +90,25 @@ const useStyles = makeStyles({
     }
 })
 
-function WeatherDataCard({ position, CityName, CityID, removeCityCard }) {
+function WeatherDataCard({ position, CityID, removeCityCard }) {
     const classes = useStyles();
     const [cityData, setCityData] = useState();
     const [weatherIcon, setWeatherIcon] = useState();
 
     useEffect(()=> {
         getCityDataById();
-    },[CityName, CityID])
+    },[CityID])
 
     const getCityDataById = () => {
         getDataByCityId(CityID).then(res => {
-            getWeatherDataByLatitudeLongitude(res.data.coord.lat, res.data.coord.lon, res.data.sys.country);
+            getWeatherDataByLatitudeLongitude(res.data.coord.lat, res.data.coord.lon, res.data.name, res.data.sys.country);
         })
     }
 
-    const getWeatherDataByLatitudeLongitude = (latitude, longitude, country) => {
+    const getWeatherDataByLatitudeLongitude = (latitude, longitude, city, country) => {
         getDataByLatLon(latitude, longitude).then(res => {
             setCityData({
-                cityName: CityName,
+                cityName: city,
                 country: country,
                 weatherData: res.data.current,
                 timeZone: res.data.timezone
@@ -131,7 +131,7 @@ function WeatherDataCard({ position, CityName, CityID, removeCityCard }) {
                         <div>
                             <Box className={classes.customBoxDateCloseIcon}>
                                 <Typography className={classes.typographyDateTime}>{moment().tz(cityData.timeZone).format("MMM D[, ] hh[:]mm a")}</Typography>
-                                <IconButton className={classes.customIconButton} onClick={() => removeCityCard(position)}> <CancelPresentationIcon /> </IconButton>
+                                <IconButton className={classes.customIconButton} onClick={() => removeCityCard(position)}> <CancelIcon /> </IconButton>
                             </Box>
                             <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                         </div>
