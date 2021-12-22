@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import WeatherDataCard from "./WeatherDataCard";
 import { makeStyles, Box } from "@material-ui/core";
@@ -17,46 +17,45 @@ const useStyles = makeStyles({
     }
 }); 
 
+function useQuery() {
+    const { search } = useLocation();
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 
-function CityWeatherData(props) {
+function CityWeatherData() {
     const styles = useStyles();
-    const navigate = useNavigate();
-    const {CityName , CityID } = useParams();
-    const [cityLatLonData, setCityLatLonData]  = useState([]);
-    const [renderingState, setRenderingState] = useState(true);
+    const navigate = useHistory();
+    const query = useQuery();
+    const [cityIdList, setCityIdList]  = useState([]);
 
     useEffect(()=> {
-        const addNewCity = checkCitiesLimit();
-        addNewCity ? setCityLatLonData(oldArray => [ {city_name: CityName.substring(1), city_id: CityID.substring(1)}, ...oldArray ])
-        : removeOldAddNewCity() 
-        
-    },[CityName, CityID])
-
-    const checkCitiesLimit = () => {
-        return cityLatLonData.length < 5 ? true : false;
-    }
-
-    const removeOldAddNewCity = () => {
-        cityLatLonData.pop();
-        setCityLatLonData(oldArray => [ {city_name: CityName.substring(1), city_id: CityID.substring(1)}, ...oldArray ])
-    }
-
+        query.get("id") === null ? console.log("home") : setCityIdList(query.get("id").split(',')); 
+    },[query.get("id")])
+    
     const removeCityByIndex = (position) => {
-        cityLatLonData.splice(position,1);
-        cityLatLonData.length > 0 ? setRenderingState(!renderingState) : navigate("/");
+        cityIdList.splice(position,1);
+        if(cityIdList.length > 0) {
+            let cityIdString = "";
+            cityIdList.forEach(cityId => { let temp = cityId;
+                cityIdString = cityIdString + temp +","
+            })
+            navigate.push(`/weather?id=${cityIdString.slice(0, -1)}`)
+        }
+        else if(cityIdList.length === 0) { 
+            navigate.push("/");
+        }     
     }
 
-    const openCityWeatherData = cityLatLonData.length >= 1 ? true : false;
+    const openCityWeatherData = cityIdList.length > 0 ? true : false;
 
     return(
         <>
             <Navbar />
             {openCityWeatherData && (
                 <Box className={styles.customBoxStyle}>
-                    {cityLatLonData.map((cityData, cityPositionInData) => (
-                        <WeatherDataCard position={cityPositionInData} CityName={cityData.city_name} CityID={cityData.city_id} removeCityCard={removeCityByIndex}/>
+                    {cityIdList.map((cityId, cityPositionInData) => (
+                        <WeatherDataCard position={cityPositionInData}  CityID={cityId} removeCityCard={removeCityByIndex}/>
                     ))}
-
                 </Box>
             )}
         </> 
