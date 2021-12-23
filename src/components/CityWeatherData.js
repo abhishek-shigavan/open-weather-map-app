@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import WeatherDataCard from "./WeatherDataCard";
-import { makeStyles, Box } from "@material-ui/core";
+import { makeStyles, Box, Typography } from "@material-ui/core";
+import { getDataByCityId, getDataByLatLon } from "../service/WeatherDataService";
+import CircularProgress from '@mui/material/CircularProgress';
+import TemperatureBarChart from "./TemperatureBarChart";
+import moment from "moment-timezone";
 
 const useStyles = makeStyles({
     customBoxStyle: {
@@ -14,6 +18,22 @@ const useStyles = makeStyles({
         alignSelf: "center",
         paddingTop: 70,
         paddingLeft: "5%"
+    },
+    customBoxForTempGraph: {
+        display: "flex",
+        flexDirection: "column",
+        width: 596,
+        marginLeft: 416,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingTop: 42,
+        paddingBottom: 42,
+        marginBottom: 70,
+        border: "1px solid #E8E8E8"
+    },
+    customGraphCityName: {
+        fontSize: 22,
+        fontWeight: 700
     }
 }); 
 
@@ -27,11 +47,33 @@ function CityWeatherData() {
     const navigate = useHistory();
     const query = useQuery();
     const [cityIdList, setCityIdList]  = useState([]);
+    const [nextWeekData, setNextWeekData] = useState([]);
+    const [dataSetForGraph, setDataSetForGraph] = useState([]);
+    const [dataLoading, setDataLoading] = useState(false);
+    const [graphCityName, setGraphCityName] = useState("");
+    const [graphCityTimeZone, setGraphCityTimeZone] = useState("");
 
     useEffect(()=> {
-        query.get("id") === null ? console.log("home") : setCityIdList(query.get("id").split(',')); 
+        if(query.get("id") !== null) setCityIdList(query.get("id").split(',')); 
     },[query.get("id")])
-    
+
+    useEffect(() => {
+        setDataLoading(true);
+        setDataSetForGraph([]);
+        if(cityIdList.length > 0) 
+            getDataByCityId(cityIdList[0]).then(res => {
+                setGraphCityName(res.data.name);
+                getDataByLatLon(res.data.coord.lat, res.data.coord.lon).then(result => {
+                    setGraphCityTimeZone(result.data.timezone);
+                    setNextWeekData(result.data.daily);
+                })
+        })
+    },[cityIdList])
+
+    useEffect(() => {
+        extractDataForGraph();
+    },[nextWeekData])
+
     const removeCityByIndex = (position) => {
         cityIdList.splice(position,1);
         if(cityIdList.length > 0) {
@@ -46,6 +88,17 @@ function CityWeatherData() {
         }     
     }
 
+    const extractDataForGraph = () => {
+        nextWeekData.map((data, dayNo) => {
+            const dataOBJ = {
+                Day: moment().tz(graphCityTimeZone).add(Number(dayNo+1), 'days').format('MMM D').toString(),
+                Temperature: ~~(+data.temp.day)
+            }
+            dataSetForGraph.push(dataOBJ);
+        })
+        setDataLoading(false)
+    }
+
     const openCityWeatherData = cityIdList.length > 0 ? true : false;
 
     return(
@@ -58,8 +111,18 @@ function CityWeatherData() {
                     ))}
                 </Box>
             )}
+            {dataLoading ? (
+                <Box className={styles.customBoxForTempGraph}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <Box className={styles.customBoxForTempGraph}>
+                    <Typography className={styles.customGraphCityName}>{graphCityName + " : Next 8 days temperature"}</Typography>
+                    <TemperatureBarChart graphData={dataSetForGraph} />
+                </Box>
+            )}
         </> 
-    );
+    )
 }
 
 export default CityWeatherData;
