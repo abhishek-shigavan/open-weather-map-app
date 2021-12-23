@@ -3,28 +3,15 @@ import { Bar } from "@visx/shape";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { Group } from "@visx/group";
-import { makeStyles, Box } from "@material-ui/core";
-
-const useStyles = makeStyles({
-    customBoxForGraph: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 596,
-        height: 364,
-        paddingLeft: 32
-    }
-});
+import {GradientTealBlue, LinearGradient} from "@visx/gradient"
 
 function TemperatureBarChart(props) {
-    const classes = useStyles();
-
+ 
     const data = props.graphData;
     const getXValue = d => d.Day;
     const getYValue = d => d.Temperature;
 
-    const margin = 32;
+    const margin = 64;
     const width = 500;
     const height = 300;
 
@@ -48,35 +35,35 @@ function TemperatureBarChart(props) {
     });
 
     return (
-        <Box className={classes.customBoxForGraph}>
-            <svg width={width} height={height}>
-                <Group>
-                    {data.map((d) => {
-                        const xValue = getXValue(d);
-                        const barWidth = xScale.bandwidth();
-                        const barHeight = innerHeight - (yScale(getYValue(d)) ?? 0);
-                        const barX = xScale(xValue);
-                        const barY = innerHeight - barHeight;
-                        return (
-                            <Bar
-                                key={`bar-${xValue}`}
-                                x={barX}
-                                y={barY}
-                                width={barWidth}
-                                height={barHeight}
-                                fill="#fc2e1c"
-                            />
-                        )
-                    })}
-                </Group>
-                <Group>
-                    <AxisBottom top={innerHeight} scale={xScale} />
-                </Group>
-                <Group>
-                    <AxisLeft left={margin} scale={yScale} />
-                </Group>
-            </svg>
-        </Box>
+        <svg width={width} height={height}>
+            <LinearGradient from="#EAEAEA" to="#A2A2A2" id="custom"/>
+            <rect width={width} height={height} fill="url(#custom)" rx={14} />
+            <Group>
+                {data.map((d) => {
+                    const xValue = getXValue(d);
+                    const barWidth = xScale.bandwidth();
+                    const barHeight = innerHeight - (yScale(getYValue(d)) ?? 0);
+                    const barX = xScale(xValue);
+                    const barY = innerHeight - barHeight;
+                    return (
+                        <Bar
+                            key={`bar-${xValue}`}
+                            x={barX}
+                            y={barY}
+                            width={barWidth}
+                            height={barHeight}
+                            fill="#747474"
+                        />
+                    )
+                })}
+            </Group>
+            <Group>
+                <AxisBottom top={innerHeight} scale={xScale} hideTicks={true} label={"Week Days"} labelProps={{fontSize: 14, fontWeight: 500, x: 215, y: 50}}/>
+            </Group>
+            <Group>
+                <AxisLeft left={margin} scale={yScale} hideTicks={true} label={"Temperature In \u00B0C"} labelProps={{fontSize: 14, fontWeight: 500, x: -200}}/>
+            </Group>
+        </svg>
     );
 }
 
