@@ -39,8 +39,7 @@ const useStyles = makeStyles({
         alignItems: "center"
     },
     customIconButton: {
-        paddingTop: 5,
-        paddingBottom: 5
+        padding: "5px 5px 5px 5px"
     },
     typographyDateTime: {
         textAlign: "left",
@@ -136,7 +135,13 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
 
     const openCityWeatherData = Boolean(cityData);
 
-    return !isLoading ? (
+    return isLoading ? (
+        <Box className={classes.customBoxForCard}>
+            <Box className={classes.customBoxForLoader} >
+                <CircularProgress />
+            </Box>
+        </Box>
+    ) : (
         <>
         {openCityWeatherData && (
             <Box className={classes.customBoxForCard}>
@@ -180,14 +185,7 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
             </Box>
         )}
         </>
-    ) : (
-        <Box className={classes.customBoxForCard}>
-            <Box className={classes.customBoxForLoader} >
-                <CircularProgress />
-            </Box>
-        </Box>
-    )
-    
+    ) 
 }
 
 export default WeatherDataCard;
