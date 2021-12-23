@@ -7,6 +7,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import clearSky from "../assets/clearSky.png";
 import overcastCloud from "../assets/overcastClouds.png";
 import sunCloud from "../assets/sunCloud.png";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const useStyles = makeStyles({
     customTextfield: {
@@ -78,6 +79,19 @@ const useStyles = makeStyles({
         fontSize: 11,
         color: "grey"
     },
+    customBoxForSpinner: {
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 515,
+        height: 50,
+        backgroundColor: "white",
+        border: "1px solid lightgrey",
+        borderTop: 0,
+        borderRadius: '0px 0px 3px 3px',
+        left: -119
+    }
 })
 
 function useCityId() {
@@ -97,6 +111,7 @@ function Navbar() {
     const [cityNotFound, setCityNotFound] = useState(false);
     const [cityIdList, setCityIdList] = useState([]);
     const [renderingState, setRenderingState] = useState(false);
+    const [dataLoading, setDataLoading] = useState(false);
 
     useEffect(() => {
         if(cityInParams.get("id") !== null) setCityIdList(cityInParams.get("id").split(','));
@@ -111,18 +126,20 @@ function Navbar() {
     }
 
     const handleSearchClick = (event) => {
+        setDataLoading(true);
         getDataByCityName(inputCityName).then((res) => {
-            console.log(res);
             res.data.list.length ? setSearchCityResult(res.data.list) : setCityNotFound(true)
+            setDataLoading(false);
         }).catch((err) =>{
+            setDataLoading(false);
             setCityNotFound(true);
-            setInputCityName("");
             console.log(err);
         })
         setAnchorEl(anchorEl ? null : event.currentTarget)
     }
 
     const handleClickAway = () =>  {
+        setInputCityName("");
         setAnchorEl(null);
         setSearchCityResult([]);
     }
@@ -131,6 +148,7 @@ function Navbar() {
         if (reason === 'clickaway') {
             return;
         }
+        setInputCityName("");
         setCityNotFound(false);
     };
 
@@ -182,36 +200,42 @@ function Navbar() {
             </div>
             <Popper id={id} open={open} anchorEl={anchorEl} placement={"bottom-start"}>
                 <ClickAwayListener onClickAway={() => handleClickAway()}>
-                <Box className={classes.customBoxStyle}>
-                    {searchCityResult.map(city =>(
-                        <List className={classes.customList}>
-                            <ListItem className={classes.customListItem}>
-                                <ListItemButton 
-                                    className={classes.customListItemButton} 
-                                    dense={true} 
-                                    onClick={() => {
-                                                setInputCityName(""); 
-                                                setCityIdList(oldId => [city.id, ...oldId]);
-                                                setRenderingState(!renderingState);    
-                                                handleClickAway();
-                                            }}
-                                >
-                                    <ListItemText>
-                                    <div className="dropdown-menu-option">
-                                        <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
-                                        <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography>
-                                        <img src={ city.weather[0].main === "Clear" ? clearSky
-                                                    : city.weather[0].main === "Clouds" ? overcastCloud
-                                                    : sunCloud} alt=""
-                                        /> 
-                                        <Typography className={classes.customTypographyLatLon}>{"lat "+city.coord.lat+", lon "+city.coord.lon}</Typography> 
-                                    </div>
-                                    </ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                        </List>
-                    ))}
-                </Box>
+                {dataLoading ? (
+                    <Box className={classes.customBoxForSpinner}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <Box className={classes.customBoxStyle}>
+                        {searchCityResult.map(city =>(
+                            <List className={classes.customList}>
+                                <ListItem className={classes.customListItem}>
+                                    <ListItemButton 
+                                        className={classes.customListItemButton} 
+                                        dense={true} 
+                                        onClick={() => {
+                                                    setInputCityName(""); 
+                                                    setCityIdList(oldId => [city.id, ...oldId]);
+                                                    setRenderingState(!renderingState);    
+                                                    handleClickAway();
+                                                }}
+                                    >
+                                        <ListItemText>
+                                        <div className="dropdown-menu-option">
+                                            <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
+                                            <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography>
+                                            <img src={ city.weather[0].main === "Clear" ? clearSky
+                                                        : city.weather[0].main === "Clouds" ? overcastCloud
+                                                        : sunCloud} alt=""
+                                            /> 
+                                            <Typography className={classes.customTypographyLatLon}>{"lat "+city.coord.lat+", lon "+city.coord.lon}</Typography> 
+                                        </div>
+                                        </ListItemText>
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        ))}
+                    </Box>
+                )}    
                 </ClickAwayListener>
             </Popper>
             <Snackbar className={classes.customSnackBar} open={cityNotFound} anchorOrigin={{ vertical, horizontal }} key={vertical + horizontal} onClose={handleCloseAlert}>
