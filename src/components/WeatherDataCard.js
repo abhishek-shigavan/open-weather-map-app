@@ -8,6 +8,7 @@ import clearSky from "../assets/clearSky.png";
 import overcastCloud from "../assets/overcastClouds.png";
 import sunCloud from "../assets/sunCloud.png";
 import CancelIcon from '@mui/icons-material/Cancel';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const useStyles = makeStyles({
     customBoxForCard: {
@@ -87,6 +88,16 @@ const useStyles = makeStyles({
         alignItems: "center",
         justifyContent: "flex-start",
         height: 20,
+    },
+    customBoxForLoader: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 300,
+        height: 260,
+        border: "1px solid #E8E8E8",
+        borderRadius: 3,
+        marginBottom: 50
     }
 })
 
@@ -94,6 +105,7 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
     const classes = useStyles();
     const [cityData, setCityData] = useState();
     const [weatherIcon, setWeatherIcon] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=> {
         getCityDataById();
@@ -106,6 +118,7 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
     }
 
     const getWeatherDataByLatitudeLongitude = (latitude, longitude, city, country) => {
+        setIsLoading(true);
         getDataByLatLon(latitude, longitude).then(res => {
             setCityData({
                 cityName: city,
@@ -117,12 +130,13 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
             res.data.current.weather[0].main === "Clear" ? setWeatherIcon(clearSky)
                 : res.data.current.weather[0].main === "Clouds" ? setWeatherIcon(overcastCloud)
                 : setWeatherIcon(sunCloud);
+            setIsLoading(false);    
         })
     }
 
     const openCityWeatherData = Boolean(cityData);
 
-    return(
+    return !isLoading ? (
         <>
         {openCityWeatherData && (
             <Box className={classes.customBoxForCard}>
@@ -166,7 +180,13 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
             </Box>
         )}
         </>
-    );
+    ) : (
+        <Box className={classes.customBoxForCard}>
+            <Box className={classes.customBoxForLoader} >
+                <CircularProgress />
+            </Box>
+        </Box>
+    )
     
 }
 
