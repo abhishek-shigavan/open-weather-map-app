@@ -99,7 +99,7 @@ function Navbar() {
     const [renderingState, setRenderingState] = useState(false);
 
     useEffect(() => {
-        cityInParams.get("id") !== null ? setCityIdList(cityInParams.get("id").split(',')) : console.log("Home Page");
+        if(cityInParams.get("id") !== null) setCityIdList(cityInParams.get("id").split(','));
     },[cityInParams])
 
     useEffect(() => {
