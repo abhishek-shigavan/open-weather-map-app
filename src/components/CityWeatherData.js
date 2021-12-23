@@ -22,8 +22,8 @@ const useStyles = makeStyles({
     customBoxForTempGraph: {
         display: "flex",
         flexDirection: "column",
-        width: 596,
-        marginLeft: 416,
+        width: 600,
+        marginLeft: 383,
         justifyContent: "center",
         alignItems: "center",
         paddingTop: 42,
