@@ -7,29 +7,54 @@ import { getDataByCityId, getDataByLatLon } from "../service/WeatherDataService"
 import CircularProgress from '@mui/material/CircularProgress';
 import TemperatureBarChart from "./TemperatureBarChart";
 import moment from "moment-timezone";
+import TemperatureGroupBarChart from "./TemperatureGroupBarChart";
 
 const useStyles = makeStyles({
     customBoxStyle: {
         display: "flex",
         flexDirection: "row",
-        width: "90%",
         flexWrap: "wrap",
         justifyContent: "center",
         alignSelf: "center",
-        paddingTop: 70,
-        paddingLeft: "5%"
+        paddingTop: 70,   
+        ['@media(max-width: 1366px) and (min-width: 1050px)']  : {
+            width: "90%",
+            paddingLeft: "5%"
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            width: "88%",
+            paddingLeft: "6%"
+        },
+        ['@media(max-width: 475px) and (min-width: 320px)'] : {
+            width: "88%",
+            paddingLeft: "6%"
+        },
     },
     customBoxForTempGraph: {
         display: "flex",
         flexDirection: "column",
-        width: 600,
-        marginLeft: 383,
         justifyContent: "center",
         alignItems: "center",
         paddingTop: 42,
         paddingBottom: 42,
         marginBottom: 70,
-        border: "1px solid #E8E8E8"
+        border: "1px solid #E8E8E8",
+        ['@media(max-width: 1366px) and (min-width: 1300px)']: { 
+            width: "66%",
+            marginLeft: "17%"
+        },
+        ['@media(max-width: 1299px) and (min-width: 1250px)']: {
+            width: "70%",
+            marginLeft: "15%"
+        },
+        ['@media(max-width: 1249px) and (min-width: 1151px)']: {
+            width: "76%",
+            marginLeft: "12%"
+        },
+        ['@media(max-width: 1150px) and (min-width: 1050px)'] : {
+            width: "84%",
+            marginLeft: "8%",
+        }
     },
     customGraphCityName: {
         fontSize: 22,
@@ -49,30 +74,46 @@ function CityWeatherData() {
     const [cityIdList, setCityIdList]  = useState([]);
     const [nextWeekData, setNextWeekData] = useState([]);
     const [dataSetForGraph, setDataSetForGraph] = useState([]);
-    const [dataLoading, setDataLoading] = useState(false);
-    const [graphCityName, setGraphCityName] = useState("");
+    const [dataLoading, setDataLoading] = useState(true);
+    const [graphCityName, setGraphCityName] = useState([]);
     const [graphCityTimeZone, setGraphCityTimeZone] = useState("");
+    
+    const [multiCityDataSet, setMultiCityDataSet] = useState([]);
+    const [cityWeeklyTempList, setCityWeeklyTempList] = useState([]);
+    const [cityList, setCityList] = useState([]);
 
     useEffect(()=> {
+        //resetting values
+        setDataLoading(true);
+        setCityList([]);
+        setCityWeeklyTempList([]);
+        setMultiCityDataSet([]);
         if(query.get("id") !== null) setCityIdList(query.get("id").split(',')); 
     },[query.get("id")])
 
     useEffect(() => {
         setDataLoading(true);
         setDataSetForGraph([]);
-        if(cityIdList.length > 0) 
-            getDataByCityId(cityIdList[0]).then(res => {
-                setGraphCityName(res.data.name);
-                getDataByLatLon(res.data.coord.lat, res.data.coord.lon).then(result => {
-                    setGraphCityTimeZone(result.data.timezone);
-                    setNextWeekData(result.data.daily);
+        console.log(cityList);
+        console.log(cityWeeklyTempList);
+        console.log(multiCityDataSet);
+        console.log(cityIdList);
+
+        if(cityIdList.length > 0)
+            cityIdList.map( c_id => {
+                getDataByCityId(c_id).then(res => {
+                    setCityList(oldCity => [ ...oldCity, res.data.name]);
+                    getDataByLatLon(res.data.coord.lat, res.data.coord.lon).then(result => {
+                        setCityWeeklyTempList(oldData =>[...oldData, result.data.daily])
+                    })
                 })
-        })
+            })
+            
     },[cityIdList])
 
-    useEffect(() => {
-        extractDataForGraph();
-    },[nextWeekData])
+    // useEffect(() => {
+    //     extractDataForMultiCityGraph();
+    // },[cityWeeklyTempList])
 
     const removeCityByIndex = (position) => {
         cityIdList.splice(position,1);
@@ -99,8 +140,28 @@ function CityWeatherData() {
         setDataLoading(false)
     }
 
-    const openCityWeatherData = cityIdList.length > 0 ? true : false;
+    const extractDataForMultiCityGraph = () => {
+        console.log("Name : ",cityList);
+        console.log("Temp : ",cityWeeklyTempList);
+        
+        if(cityWeeklyTempList.length > 0 && cityIdList.length === cityWeeklyTempList.length) {  
+            for(let dayNo = 0; dayNo < 8; dayNo++){
+                let obj = {};
+                obj.date = moment().add(Number(dayNo+1), 'days').format('MMM D').toString();
+                cityList.map((cityName, position) => { 
+                    const tempData = cityWeeklyTempList[position]
+                    obj[cityName] = ~~(tempData[dayNo].temp.day) 
+                })
+                console.log(obj);
+                multiCityDataSet.push(obj);
+            }
+            console.log(multiCityDataSet);
+            setDataLoading(false);
+        }    
+    }
 
+    const openCityWeatherData = cityIdList.length > 0 ? true : false;
+    
     return(
         <>
             <Navbar />
@@ -117,8 +178,9 @@ function CityWeatherData() {
                 </Box>
             ) : (
                 <Box className={styles.customBoxForTempGraph}>
-                    <Typography className={styles.customGraphCityName}>{graphCityName + " : Next 8 days temperature"}</Typography>
-                    <TemperatureBarChart graphData={dataSetForGraph} />
+                    {/* <Typography className={styles.customGraphCityName}>{graphCityName + " : Next 8 days temperature"}</Typography>
+                    <TemperatureBarChart graphData={dataSetForGraph} /> */}
+                    {/* <TemperatureGroupBarChart GraphDataset={multiCityDataSet} /> */}
                 </Box>
             )}
         </> 
