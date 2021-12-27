@@ -10,87 +10,261 @@ import sunCloud from "../assets/sunCloud.png";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const useStyles = makeStyles({
-    customTextfield: {
-        width: 625,
-        height: 32,
-        paddingLeft: 10,
-        border: '1px solid lightgray',
-        backgroundColor: 'white',
-        borderRadius: 3
-    },
-    customButton: {
-        height: 33,
-        width: 120,   
-        backgroundColor: '#48484A',
-        borderRadius: '0px 3px 3px 0px',
-        color: 'white',
-        textTransform: "none",
-        '&:hover': {
-            backgroundColor: '#252526',
+    ['@media(max-width: 475px) and (min-width: 320px)'] : {
+        customTextfield: {
+            width: 280,
+            height: 32,
+            paddingLeft: 10,
+            border: '1px solid lightgray',
+            backgroundColor: 'white',
+            borderRadius: 3
+        },
+        customButton: {
+            height: 33,
+            width: 70,   
+            backgroundColor: '#48484A',
+            borderRadius: '0px 3px 3px 0px',
+            color: 'white',
+            textTransform: "none",
+            '&:hover': {
+                backgroundColor: '#252526',
+            }
+        },
+        customBoxStyle: {
+            position: "relative",
+            width: 220,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: "0px",
+            borderRadius: '0px 0px 3px 3px',
+            left: -69,
+            top: -1
+        },
+        customSnackBar: {
+            marginTop: 100,
+            width: 280
+        },
+        customList: {
+            borderRadius: '0px 0px 3px 3px',
+            paddingTop: 0,
+            paddingBottom: 0
+        },
+        customListItem: {
+            padding: 0,
+            height: 36
+        },
+        customListItemButton: {
+            height: 36,
+            paddingLeft: 0
+        },
+        customTypographyCityCountry: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            fontSize: 12,
+            width: 130
+        },
+        customTypographyTemperature: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            fontSize: 11,
+            width: 30
+        },
+        customWeatherIcon: {
+            width: 18,
+            height: 18
+        },
+        customTypographyLatLon: {
+            width: 0,
+            fontSize: 0,
+        },
+        customBoxForSpinner: {
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 220,
+            height: 50,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: 0,
+            borderRadius: '0px 0px 3px 3px',
+            left: -69,
+            top: -1
         }
     },
-    customInputAdornment: {
-        margin: 0,
-    },
-    customBoxStyle: {
-        position: "relative",
-        width: 515,
-        backgroundColor: "white",
-        border: "1px solid lightgrey",
-        borderTop: 0,
-        borderRadius: '0px 0px 3px 3px',
-        left: -119
-    },
-    customSnackBar: {
-        marginTop: 100,
-        width: 400
-    },
-    customList: {
-        borderRadius: '0px 0px 3px 3px',
-        padding: 0
-    },
-    customListItem: {
-        padding: 0,
-        height: 36
-    },
-    customListItemButton: {
-        height: 36,
-    },
-    customTypographyCityCountry: {
-        display: 'flex',
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        width: 170
-    },
-    customTypographyTemperature: {
-        display: 'flex',
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        width: 83
-    },
-    customTypographyLatLon: {
-        display: 'flex',
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        width: 170,
-        fontSize: 11,
-        color: "grey"
-    },
-    customBoxForSpinner: {
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 515,
-        height: 50,
-        backgroundColor: "white",
-        border: "1px solid lightgrey",
-        borderTop: 0,
-        borderRadius: '0px 0px 3px 3px',
-        left: -119
+    ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+        customTextfield: {
+            width: 625,
+            height: 32,
+            paddingLeft: 10,
+            border: '1px solid lightgray',
+            backgroundColor: 'white',
+            borderRadius: 3
+        },
+        customButton: {
+            height: 33,
+            width: 120,   
+            backgroundColor: '#48484A',
+            borderRadius: '0px 3px 3px 0px',
+            color: 'white',
+            textTransform: "none",
+            '&:hover': {
+                backgroundColor: '#252526',
+            }
+        },
+        customInputAdornment: {
+            margin: 0,
+        },
+        customBoxStyle: {
+            position: "relative",
+            width: 515,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: 0,
+            borderRadius: '0px 0px 3px 3px',
+            left: -119,
+            top: -1
+        },
+        customSnackBar: {
+            marginTop: 100,
+            width: 400
+        },
+        customList: {
+            borderRadius: '0px 0px 3px 3px',
+            padding: 0
+        },
+        customListItem: {
+            padding: 0,
+            height: 36
+        },
+        customListItemButton: {
+            height: 36,
+        },
+        customTypographyCityCountry: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: 170
+        },
+        customTypographyTemperature: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: 83
+        },
+        customTypographyLatLon: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            width: 170,
+            fontSize: 11,
+            color: "grey"
+        },
+        customBoxForSpinner: {
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 515,
+            height: 50,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: 0,
+            borderRadius: '0px 0px 3px 3px',
+            left: -119,
+            top: -1
+        }
+    },    
+    ['@media(max-width: 1366px) and (min-width: 1050px)']  : {
+        customTextfield: {
+            width: 625,
+            height: 32,
+            paddingLeft: 10,
+            border: '1px solid lightgray',
+            backgroundColor: 'white',
+            borderRadius: 3
+        },
+        customButton: {
+            height: 33,
+            width: 120,   
+            backgroundColor: '#48484A',
+            borderRadius: '0px 3px 3px 0px',
+            color: 'white',
+            textTransform: "none",
+            '&:hover': {
+                backgroundColor: '#252526',
+            }
+        },
+        customInputAdornment: {
+            margin: 0,
+        },
+        customBoxStyle: {
+            position: "relative",
+            width: 515,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: 0,
+            borderRadius: '0px 0px 3px 3px',
+            left: -119
+        },
+        customSnackBar: {
+            marginTop: 100,
+            width: 400
+        },
+        customList: {
+            borderRadius: '0px 0px 3px 3px',
+            padding: 0
+        },
+        customListItem: {
+            padding: 0,
+            height: 36
+        },
+        customListItemButton: {
+            height: 36,
+        },
+        customTypographyCityCountry: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: 170
+        },
+        customTypographyTemperature: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: 83
+        },
+        customTypographyLatLon: {
+            display: 'flex',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            width: 170,
+            fontSize: 11,
+            color: "grey"
+        },
+        customBoxForSpinner: {
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 515,
+            height: 50,
+            backgroundColor: "white",
+            border: "1px solid lightgrey",
+            borderTop: 0,
+            borderRadius: '0px 0px 3px 3px',
+            left: -119
+        }
     }
 })
 
@@ -222,11 +396,11 @@ function Navbar() {
                                         <ListItemText>
                                         <div className="dropdown-menu-option">
                                             <Typography className={classes.customTypographyCityCountry}>{city.name+", "+city.sys.country}</Typography>
-                                            <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp - 273.15)+ "\u00B0 C"}</Typography>
+                                            <Typography className={classes.customTypographyTemperature}>{~~(city.main.temp)+ "\u00B0 C"}</Typography>
                                             <img src={ city.weather[0].main === "Clear" ? clearSky
                                                         : city.weather[0].main === "Clouds" ? overcastCloud
-                                                        : sunCloud} alt=""
-                                            /> 
+                                                        : sunCloud} alt="" className={classes.customWeatherIcon}
+                                            />
                                             <Typography className={classes.customTypographyLatLon}>{"lat "+city.coord.lat+", lon "+city.coord.lon}</Typography> 
                                         </div>
                                         </ListItemText>
