@@ -13,30 +13,63 @@ import CircularProgress from '@mui/material/CircularProgress';
 const useStyles = makeStyles({
     customBoxForCard: {
         display: "flex",
-        flex: "0 0 33.333333%",
-        justifyContent: "center"
+        justifyContent: "center",
+        ['@media(max-width: 475px) and (min-width: 320px)'] : {
+            flex: "0 0 100%",
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            flex: "0 0 50%",
+        },
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            flex: "0 0 33.333333%",
+        },
     },
     customCard: {
-        width: 300,
-        height: 260,
         border: "none",
-        marginBottom: 50
-       
+        marginBottom: 50,
+        height: 281,
+        ['@media(max-width: 375px) and (min-width: 320px)'] : {
+            width: 250,
+        },
+        ['@media(max-width: 475px) and (min-width: 376px)'] : {
+            width: 280,
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            width: 272,
+        },
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            width: 300,
+            height: 260,
+        },
     },
     customCardContent: {
         display: "flex",
-        height: 220,
+        height: 241,
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        background: "#E8E8E8"
+        background: "#E8E8E8",
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            height: 220,
+        },
     },
     customBoxDateCloseIcon: {
         display: "flex",
         flexDirection: "row",
-        width: 268,
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        ['@media(max-width: 375px) and (min-width: 320px)'] : {
+            width: 216,
+        },
+        ['@media(max-width: 475px) and (min-width: 376px)'] : {
+            width: 248,
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            width: 240,
+        },
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            width: 268,
+        },
     },
     customIconButton: {
         padding: "5px 5px 5px 5px"
@@ -48,13 +81,19 @@ const useStyles = makeStyles({
     },
     typographyCityName: {
         textAlign: "left",
-        fontSize: 24,
-        fontWeight: 700
+        fontSize: 20,
+        fontWeight: 700,
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            fontSize: 24,
+        }
     },
     typographyTemperature: {
         textAlign: "left",
-        fontSize: 30,
-        fontWeight: 600
+        fontSize: 24,
+        fontWeight: 600,
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            fontSize: 30,
+        }
     },
     typographyWeather: {
         textAlign: "left",
@@ -70,16 +109,35 @@ const useStyles = makeStyles({
         height: 20,
         textAlign: "left",
         fontSize: 14,
-        width: 120
+        ['@media(max-width: 375px) and (min-width: 320px)'] : {
+            width: 92,
+        },
+        ['@media(max-width: 475px) and (min-width: 376px)'] : {
+            width: 116
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            width: 112
+        },
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            width: 120
+        },
     },
     typographyWeatherDetails: {
         textAlign: "left",
         fontSize: 14,
-        width: 120
+        width: 116,
+        ['@media(max-width: 1366px) and (min-width: 768px)'] : {
+            width: 120
+        },
     },
     customBoxForWeatherDetails: {
         borderLeft: '1px solid #ED7B5B',
-        paddingLeft: 15
+        paddingLeft: 15,
+        ['@media(max-width: 1050px) and (min-width: 320px)'] : {
+            height: 83,
+            display: "flex",
+            flexDirection: "column",
+        },
     },
     customBoxForTypography: {
         display: 'flex',
@@ -88,15 +146,54 @@ const useStyles = makeStyles({
         justifyContent: "flex-start",
         height: 20,
     },
+    customBoxForDewVisibility: {
+        display: 'flex',
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        height: 42,
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            height: 20,
+        },
+    },
     customBoxForLoader: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: 300,
-        height: 260,
+        height: 281,
         border: "1px solid #E8E8E8",
         borderRadius: 3,
-        marginBottom: 50
+        marginBottom: 50,
+        ['@media(max-width: 375px) and (min-width: 320px)'] : {
+            width: 250,
+        },
+        ['@media(max-width: 475px) and (min-width: 376px)'] : {
+            width: 280
+        },
+        ['@media(max-width: 1049px) and (min-width: 768px)'] : {
+            width: 272
+        },
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            width: 300,
+            height: 260,
+        },
+    },
+    customWeatherIcon: {
+        paddingRight: 10, 
+        width: 24, 
+        height: 24,
+        ['@media(max-width: 1366px) and (min-width: 1050px)'] : {
+            width: 28,
+            height: 28,
+        },
+    },
+    customIconTempBox: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center"
     }
 })
 
@@ -155,10 +252,12 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
                             <Typography className={classes.typographyCityName}>{cityData.cityName+", "+cityData.country}</Typography>
                         </div>
                         <div>
-                            <Typography className={classes.typographyTemperature}>
-                                <img src={weatherIcon} alt="" style={{paddingRight: 10, width: 28, height: 28}}/>
-                                {~~(cityData.weatherData.temp)+ "\u00B0C"}
-                            </Typography>
+                            <Box className={classes.customIconTempBox}>
+                                <img src={weatherIcon} alt="" className={classes.customWeatherIcon}/>
+                                <Typography className={classes.typographyTemperature}>
+                                    {~~(cityData.weatherData.temp)+ "\u00B0C"}
+                                </Typography>
+                            </Box>
                             <Typography className={classes.typographyWeather}>{"Feels like "+~~(cityData.weatherData.feels_like)+"\u00B0C. "+cityData.weatherData.weather[0].description+". "+cityData.weatherData.weather[0].main}</Typography>
 
                             <Box className={classes.customBoxForWeatherDetails}>
@@ -174,7 +273,7 @@ function WeatherDataCard({ position, CityID, removeCityCard }) {
                                     <Typography className={classes.typographyWeatherDetails}> {"Humidity: "+cityData.weatherData.humidity+"%"} </Typography>
                                     <Typography className={classes.typographyWeatherDetails}> {"UV: "+cityData.weatherData.uvi} </Typography>
                                 </Box>           
-                                <Box className={classes.customBoxForTypography}>
+                                <Box className={classes.customBoxForDewVisibility}>
                                     <Typography className={classes.typographyWeatherDetails}> {"Dew point: "+ ~~(cityData.weatherData.dew_point) +"\u00B0C"} </Typography>
                                     <Typography className={classes.typographyWeatherDetails}> {"Visibility: " + (cityData.weatherData.visibility/1000)+ "km"} </Typography>
                                 </Box>
